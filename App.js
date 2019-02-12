@@ -8,7 +8,21 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import { StyleSheet,
+  TouchableHighlight,
+  Dimensions,
+  View,
+  Text,
+  Linking,
+  Platform, 
+  Button, 
+  Picker, 
+  Alert,
+  Animated,
+  TouchableOpacity,
+  DevLoadingView,
+  Modal} from 'react-native';
+import Pdf from 'react-native-pdf';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -20,31 +34,42 @@ const instructions = Platform.select({
 type Props = {};
 export default class App extends Component<Props> {
   render() {
+
+    const source = {uri:'http://samples.leanpub.com/thereactnativebook-sample.pdf',cache:true};
+        //const source = require('./test.pdf');  // ios only
+        //const source = {uri:'bundle-assets://test.pdf'};
+ 
+        //const source = {uri:'file:///sdcard/test.pdf'};
+        //const source = {uri:"data:application/pdf;base64,..."};
+
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
+                <Pdf
+                    source={source}
+                    onLoadComplete={(numberOfPages,filePath)=>{
+                        console.log(`number of pages: ${numberOfPages}`);
+                    }}
+                    onPageChanged={(page,numberOfPages)=>{
+                        console.log(`current page: ${page}`);
+                    }}
+                    onError={(error)=>{
+                        console.log(error);
+                    }}
+                    style={styles.pdf}/>
+            </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+      flex: 1,
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      marginTop: 25,
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  pdf: {
+      flex:1,
+      width:Dimensions.get('window').width,
+  }
 });
